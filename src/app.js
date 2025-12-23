@@ -25,6 +25,12 @@ app.use(cors({
 app.use(logRequest);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Serve raw Swagger JSON (public, no auth)
+app.get("/api/docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
+
 app.use("/api/users", userRoute);
 app.use("/api", alertRoute)
 app.use("/api", analyticsRoute);
