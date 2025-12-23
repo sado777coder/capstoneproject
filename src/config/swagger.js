@@ -12,6 +12,8 @@ const options = {
       {
         url: "http://localhost:3002/api",
         description: "Local server",
+        url:"https://capstoneproject-6-w38z.onrender.com",
+        description: "live server",
       },
     ],
     components: {
