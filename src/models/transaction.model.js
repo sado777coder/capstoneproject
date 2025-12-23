@@ -4,7 +4,7 @@ const transactionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // must match User model name
+      ref: "user", // must match User model name
       required: true,
     },
     amount: {
