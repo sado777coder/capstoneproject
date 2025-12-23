@@ -1,4 +1,5 @@
 API Documentation
+
 This project provides API documentation through Swagger (auto-generated) and a Postman collection for testing.
 1. Swagger (Live API Docs)
 The Swagger UI provides a web interface to explore all endpoints, see request/response schemas, and try out endpoints.
