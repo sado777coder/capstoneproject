@@ -4,7 +4,7 @@ const transactionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user", // must match User model name
+      ref: "User", 
       required: true,
     },
     amount: {
@@ -20,8 +20,14 @@ const transactionSchema = new mongoose.Schema(
       enum: ["debit", "credit"],
       required: true,
     },
-    channel: {
+    category: {
+      type: String, // Food, Transport, etc.
+    },
+    note: {
       type: String,
+    },
+    channel: {
+      type: String, // cash, mobile money, card, etc.
     },
   },
   { timestamps: true }

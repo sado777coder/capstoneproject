@@ -10,15 +10,11 @@ const {
 const router = express.Router();
 router.use(auth);
 
-// routers
-router.get("/transactions/summary", transactionSummary);
-router.get("/users/:userId", userAnalytics);
-router.get("/transactions/trends", transactionTrends);
+/**
+ * ANALYTICS ROUTES
+ */
+router.get("/analytics/summary", transactionSummary);
+router.get("/analytics/user", userAnalytics);
+router.get("/analytics/trends", transactionTrends);
 
-module.exports = router;
-
-
-
-
-
-
+module.exports = router

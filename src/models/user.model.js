@@ -11,10 +11,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "customer",
     },
-    password: {
+    userType: {
+  type: String,
+  enum: ["student", "professional"],
+},
+ password: {
         type: String,
         required: true,
-        unique: true,
     },
     isActive: {
         type: Boolean, // Use Mongoose Boolean

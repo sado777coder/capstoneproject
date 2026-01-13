@@ -1,16 +1,6 @@
 const Joi = require("joi");
-const mongoose = require("mongoose");
 
 const transactionValidator = Joi.object({
-  userId: Joi.string()
-    .custom((value, helpers) => {
-      if (!mongoose.Types.ObjectId.isValid(value)) {
-        return helpers.message("Invalid userId");
-      }
-      return value;
-    })
-    .required(),
-
   amount: Joi.number()
     .positive()
     .required(),
@@ -24,8 +14,11 @@ const transactionValidator = Joi.object({
     .valid("debit", "credit")
     .required(),
 
-  channel: Joi.string()
-    .required(),
+  category: Joi.string().optional(),
+
+  note: Joi.string().optional(),
+
+  channel: Joi.string().required(),
 });
 
 module.exports = transactionValidator;

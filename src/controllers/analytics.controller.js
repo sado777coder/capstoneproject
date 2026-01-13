@@ -1,16 +1,28 @@
-require("dotenv").config();
 const mongoose = require("mongoose");
 const transactionModel = require("../models/transaction.model");
 
 /**
- * GET TRANSACTION SUMMARY
+ * ===============================
+ * GET TRANSACTION SUMMARY (USER)
  * total transactions
  * total amount
  * average amount
+ * ===============================
  */
 const transactionSummary = async (req, res, next) => {
   try {
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
+    }
+
     const result = await transactionModel.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        },
+      },
       {
         $group: {
           _id: null,
@@ -35,16 +47,17 @@ const transactionSummary = async (req, res, next) => {
 };
 
 /**
+ * ===============================
  * GET USER ANALYTICS
- * total spent
+ * total spent (debit)
  * transaction count
  * highest transaction
+ * ===============================
  */
 const userAnalytics = async (req, res, next) => {
   try {
-    const { userId } = req.user._id;
+    const userId = req.user._id;
 
-    // optional safety check
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid userId" });
     }
@@ -53,11 +66,12 @@ const userAnalytics = async (req, res, next) => {
       {
         $match: {
           userId: new mongoose.Types.ObjectId(userId),
+          type: "debit",
         },
       },
       {
         $group: {
-          _id: "$userId",
+          _id: null,
           totalSpent: { $sum: "$amount" },
           transactionCount: { $sum: 1 },
           highestTransaction: { $max: "$amount" },
@@ -79,24 +93,25 @@ const userAnalytics = async (req, res, next) => {
 };
 
 /**
- * GET TRANSACTION TRENDS
+ * ===============================
+ * GET TRANSACTION TRENDS (USER)
  * daily | monthly
+ * optional date range
+ * ===============================
  */
 const transactionTrends = async (req, res, next) => {
   try {
-    const {
-      period = "daily",
-      userId,
-      startDate,
-      endDate,
-    } = req.query;
+    const { period = "daily", startDate, endDate } = req.query;
+    const userId = req.user._id;
 
-     // BUILD MATCH FILTER
-    const match = {};
-
-    if (userId) {
-      match.userId = new mongoose.Types.ObjectId(userId);
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId" });
     }
+
+    // MATCH FILTER (USER-LOCKED)
+    const match = {
+      userId: new mongoose.Types.ObjectId(userId),
+    };
 
     if (startDate || endDate) {
       match.createdAt = {};
@@ -104,23 +119,19 @@ const transactionTrends = async (req, res, next) => {
       if (endDate) match.createdAt.$lte = new Date(endDate);
     }
 
-    //GROUPING LOGIC
-    let groupBy;
+    // GROUPING LOGIC
+    const groupBy =
+      period === "monthly"
+        ? {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          }
+        : {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+            day: { $dayOfMonth: "$createdAt" },
+          };
 
-    if (period === "monthly") {
-      groupBy = {
-        year: { $year: "$createdAt" },
-        month: { $month: "$createdAt" },
-      };
-    } else {
-      groupBy = {
-        year: { $year: "$createdAt" },
-        month: { $month: "$createdAt" },
-        day: { $dayOfMonth: "$createdAt" },
-      };
-    }
-
-  // AGGREGATION PIPELINE
     const result = await transactionModel.aggregate([
       { $match: match },
       {
@@ -133,27 +144,24 @@ const transactionTrends = async (req, res, next) => {
       {
         $project: {
           _id: 0,
-          period: {
-            $cond: [
-              { $eq: [period, "monthly"] },
-              {
-                $concat: [
-                  { $toString: "$_id.year" },
-                  "-",
-                  { $toString: "$_id.month" },
-                ],
-              },
-              {
-                $concat: [
-                  { $toString: "$_id.year" },
-                  "-",
-                  { $toString: "$_id.month" },
-                  "-",
-                  { $toString: "$_id.day" },
-                ],
-              },
-            ],
-          },
+          period:
+            period === "monthly"
+              ? {
+                  $concat: [
+                    { $toString: "$_id.year" },
+                    "-",
+                    { $toString: "$_id.month" },
+                  ],
+                }
+              : {
+                  $concat: [
+                    { $toString: "$_id.year" },
+                    "-",
+                    { $toString: "$_id.month" },
+                    "-",
+                    { $toString: "$_id.day" },
+                  ],
+                },
           totalAmount: 1,
           transactionCount: 1,
         },
@@ -163,7 +171,7 @@ const transactionTrends = async (req, res, next) => {
 
     res.status(200).json({
       message: "Transaction trends fetched successfully",
-      filters: { period, userId, startDate, endDate },
+      filters: { period, startDate, endDate },
       data: result,
     });
   } catch (error) {

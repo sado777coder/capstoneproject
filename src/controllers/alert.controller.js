@@ -1,5 +1,5 @@
 const alertModel = require("../models/alert.model");
-
+const User = require("../models/user.model");
 // GET all alerts (filter + pagination)
 const getAllAlerts = async (req, res, next) => {
   try {
@@ -11,8 +11,7 @@ const getAllAlerts = async (req, res, next) => {
       limit = 5,
     } = req.query;
 
-    const filter = {};
-    if (userId) filter.userId = userId;
+    const filter = { userId: req.user._id };
     if (severity) filter.severity = severity;
     if (resolved !== undefined)
       filter.resolved = resolved === "true";

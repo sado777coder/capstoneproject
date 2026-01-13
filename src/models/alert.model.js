@@ -4,7 +4,7 @@ const alertSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user", //  FIXED
+      ref: "User", //  FIXED
       required: true,
     },
     transactionId: {

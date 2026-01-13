@@ -9,6 +9,7 @@ const analyticsRoute = require("./routes/analytics.route.js");
 const transactionRoute = require("./routes/transaction.route.js");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
+const budgetRoute = require("./routes/budget.route");
 
 
 
@@ -32,9 +33,11 @@ app.get("/api/docs.json", (req, res) => {
 });
 
 app.use("/api/users", userRoute);
+app.use("/api", budgetRoute);
+app.use("/api", transactionRoute);
 app.use("/api", alertRoute)
 app.use("/api", analyticsRoute);
-app.use("/api", transactionRoute);
+
 
 
 
