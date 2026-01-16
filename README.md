@@ -1,63 +1,245 @@
-API Documentation :
+API Documentation
 
-This project provides API documentation through Swagger (auto-generated) and a Postman collection for testing.
-1. Swagger (Live API Docs)
-The Swagger UI provides a web interface to explore all endpoints, see request/response schemas, and try out endpoints.
-•	URL (Live on Render): https://capstoneproject-6-w38z.onrender.com/api/docs
-•	Local Development:
-Run the project locally and navigate to:
+This project provides a personal finance management API with authentication, transactions, budgets, alerts, and analytics.
+API documentation is available via Swagger (auto-generated) and a Postman collection for testing.
+
+1️. Swagger (Live API Docs)
+
+Swagger UI provides an interactive interface to explore endpoints, view request/response schemas, and test APIs directly from the browser.
+
+ URLs
+
+Live (Render):
+https://capstoneproject-6-w38z.onrender.com/api/docs
+
+Local Development:
+After running the project locally, open:
+
 http://localhost:3002/api/docs
-Swagger includes endpoints for:
-•	Auth: User signup and login
-•	Transactions: Create, read, update, delete
-•	Alerts: View and manage alerts
-•	Analytics: Transaction and user analytics
-Some endpoints require a JWT token. Use the /users/login endpoint to obtain a token and click Authorize in Swagger.
-________________________________________
-2. Postman Collection
-For testing endpoints in Postman:
-•	Import the collection using this link:
-https://sado777coder-4419533.postman.co/workspace/bfa808a6-e923-4217-869b-5243d41693eb/collection/49418763-487104d2-fffa-429a-a411-1a1eb38350b1?action=share&source=copy-link&creator=49418763
-•	The collection includes pre-configured requests for:
-o	Authentication (signup/login)
-o	Transactions (CRUD)
-o	Alerts (fetch, update, delete)
-o	Analytics (summary, trends, user-specific)
-•	Add your JWT token in the Postman Authorization tab for protected endpoints.
-________________________________________
-3. Quick Start
-1.	Clone the repo:
-2.	git clone https://github.com/sado777coder/capstoneproject.git
-3.	cd capstoneproject
-4.	Install dependencies:
-5.	npm install
-6.	Create a .env file with required variables:
-7.	PORT=3002
-8.	MONGODB_URL=<your-mongo-uri>
-9.	JWT_SECRET=<your-secret>
-10.	REDIS_URL=<optional-redis-url>
-11.	Run the server locally:
-12.	npm run dev
-13.	Visit http://localhost:3002/api/docs to view Swagger, or use Postman with the collection link.
-________________________________________
-4. API Flow Diagram
+
+ Available API Modules
+
+Swagger documents the following secured and public endpoints:
+
+ Authentication
+
+User registration (signup)
+
+User login (JWT-based authentication)
+
+ Transactions
+
+Create transaction (debit / credit)
+
+Fetch all user transactions (paginated)
+
+Fetch a single transaction
+
+Update a transaction
+
+Delete a transaction
+
+Debit transactions automatically update the user’s monthly budget and trigger alerts.
+
+ Budgets
+
+Create / initialize a monthly budget
+
+Tracks:
+
+Monthly income
+
+Fixed expenses
+
+Remaining balance
+
+Automatically updated when debit transactions are created, updated, or deleted.
+
+ Alerts
+
+Auto-generated on transaction create/update/delete
+
+Fetch all alerts (pagination + filters)
+
+Fetch single alert
+
+Update alert (resolve / acknowledge)
+
+Delete alert (optional/admin)
+
+ Analytics
+
+Transaction summary (count, total, average)
+
+User spending analytics (total spent, highest transaction)
+
+Transaction trends (daily / monthly, optional date range)
+
+ Authentication in Swagger
+
+Most endpoints require a JWT token.
+
+Steps:
+
+Call /users/login
+
+Copy the returned JWT
+
+Click Authorize in Swagger
+
+Paste token as:
+
+Bearer <your_token>
+
+2️. Postman Collection
+
+A Postman collection is provided for manual testing and frontend integration.
+
+ Collection Link
+
+[https://sado777coder-4419533.postman.co/workspace/bfa808a6-e923-4217-869b-5243d41693eb/collection/49418763-487104d2-fffa-429a-a411-1a1eb38350b1?action=share&source=copy-link&creator=49418763](https://sado777coder-4419533.postman.co/workspace/Amos-Sottie's-Workspace~bfa808a6-e923-4217-869b-5243d41693eb/collection/49418763-f3ed3035-7b05-4c40-963f-2308902ad96c?action=share&source=copy-link&creator=49418763)
+
+ Included Requests
+
+Auth
+
+Signup
+
+Login
+
+Transactions
+
+Create
+
+Get all (paginated)
+
+Get single
+
+Update
+
+Delete
+
+Budgets
+
+Create monthly budget
+
+Alerts
+
+Get all (filters: severity, resolved)
+
+Get single
+
+Update (resolve)
+
+Delete
+
+Analytics
+
+Summary
+
+User analytics
+
+Trends (daily / monthly)
+
+ Authorization in Postman
+
+For protected routes:
+
+Set Authorization → Bearer Token
+
+Paste the JWT from login response
+
+ Tip: Create a Postman Environment with:
+
+baseUrl = http://localhost:3002/api
+jwtToken = <your_token>
+
+3️. Quick Start (Local Setup)
+ Clone Repository
+git clone https://github.com/sado777coder/capstoneproject.git
+cd capstoneproject
+
+ Install Dependencies
+npm install
+
+ Environment Variables
+
+Create a .env file in the root directory:
+
+PORT=3002
+MONGOOSE_URL=<your-mongodb-uri>
+JWT_SECRET=<your-jwt-secret>
+
+ Run the Server
+npm run dev
+
+ Access Docs
+
+Swagger UI:
+http://localhost:3002/api/docs
+
+Swagger JSON:
+http://localhost:3002/api/docs.json
+
+4️. API Flow Diagram
 flowchart LR
     A[User Auth] -->|JWT Token| B[Transactions]
-    A -->|JWT Token| C[Alerts]
-    A -->|JWT Token| D[Analytics]
-    B --> C
-    B --> D
-    C --> D
-Explanation:
-•	User Auth: Signup or login to get a JWT token.
-•	Transactions: Create, read, update, delete transactions (requires JWT).
-•	Alerts: View and manage alerts (requires JWT).
-•	Analytics: Fetch transaction summaries, trends, and user-specific analytics (requires JWT).
-•	Arrows indicate which endpoints interact with others or require prior authorization.
-________________________________________
-5. Tips for Frontend Developers
-•	Use Swagger for understanding endpoints: Quickly check required request parameters, response structures, and authentication requirements.
-•	Use Postman for testing: Run requests, inspect responses, and copy request headers or payloads.
-•	JWT Tokens: After login, copy the token from Postman or Swagger and include it in the Authorization header for all protected endpoints.
-•	Environment Variables in Postman: Create a Local environment with variables like baseUrl and jwtToken to make switching between local and live servers seamless.
-•	Testing order: Always authenticate first, then test transactions, alerts, and analytics endpoints.
+    A -->|JWT Token| C[Budgets]
+    A -->|JWT Token| D[Alerts]
+    A -->|JWT Token| E[Analytics]
+
+    B -->|Create / Update / Delete| D
+    B -->|Debit| C
+    C --> E
+    B --> E
+
+ Flow Explanation
+
+Auth: User signs up or logs in to obtain a JWT.
+
+Transactions:
+
+Debit transactions reduce monthly budget balance.
+
+Create alerts automatically.
+
+Budgets:
+
+One budget per user per month.
+
+Tracks remaining balance in real time.
+
+Alerts:
+
+Linked to users and transactions.
+
+Can be resolved or acknowledged.
+
+Analytics:
+
+Uses transaction data to generate summaries and trends.
+
+5️. Notes for Frontend Developers
+
+ Always authenticate first to obtain a JWT.
+
+ Use Swagger to understand payloads, validation rules, and responses.
+
+ Use Postman to test and debug before frontend integration.
+
+ JWT Token must be included in:
+
+Authorization: Bearer <token>
+
+
+ Recommended order of testing:
+
+Auth (signup/login)
+
+Budget creation
+
+Transactions
+
+Alerts
+
+Analytics
