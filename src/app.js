@@ -21,9 +21,10 @@ const app = express();
 app.use(express.json());
 
 const allowedOrigins = [
-  "http://localhost:5173", // Vite frontend
-  "http://localhost:3002", // optional (swagger/local backend)
-  "https://capstoneproject-6-w38z.onrender.com" // Render
+  "http://localhost:5173", // Vite (local dev)
+  "http://localhost:3002", // Swagger / local backend
+  "https://capstoneproject-6-w38z.onrender.com", // Render backend
+  "https://papaya-stardust-e43280.netlify.app" // Netlify frontend 
 ];
 
 app.use(
