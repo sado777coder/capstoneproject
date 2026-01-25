@@ -24,7 +24,7 @@ const allowedOrigins = [
   "http://localhost:5173", // Vite (local dev)
   "http://localhost:3002", // Swagger / local backend
   "https://capstoneproject-6-w38z.onrender.com", // Render backend
-  "https://papaya-stardust-e43280.netlify.app" // Netlify frontend 
+  "https://papaya-stardust-e43280.netlify.app"// Netlify frontend 
 ];
 
 app.use(
@@ -53,7 +53,7 @@ app.get("/api/docs.json", (req, res) => {
 
   // ROUTES
 
-app.use("/api/users", userRoute);
+app.use("/api/auth", userRoute);
 app.use("/api", budgetRoute);
 app.use("/api", transactionRoute);
 app.use("/api", alertRoute);
