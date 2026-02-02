@@ -20,22 +20,9 @@ const app = express();
 
 app.use(express.json());
 
-const allowedOrigins = [
-  "http://localhost:5173", // Vite (local dev)
-  "http://localhost:3002", // Swagger / local backend
-  "https://capstoneproject-6-w38z.onrender.com", // Render backend
-  "https://papaya-stardust-e43280.netlify.app"// Netlify frontend 
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: true,
     credentials: true,
   })
 );
